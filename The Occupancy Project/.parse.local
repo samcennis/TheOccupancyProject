@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "The Occupancy Project": {
+      "applicationId": "VdWSfZSMsdaB6hfDRMFb1Ct4PJSqJErnABpwTRHW"
+    },
+    "_default": {
+      "link": "The Occupancy Project"
+    }
+  }
+}
