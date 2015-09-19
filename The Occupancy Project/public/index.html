@@ -92,9 +92,13 @@
         <h2>Main Page</h2>
         <a class="waves-effect waves-light btn modal-trigger" id="logOffTrigger">Logoff</a>
         <br />
-        <select id="building-selection">
+        <div class="input-field">
+            <select id="building-selection">
         
-        </select>
+            </select>    
+            <label>Building Selection</label>
+        </div>
+        
     </div>
     
     <div id="admin-page" style="display: none;">
@@ -123,6 +127,9 @@
     </form>
 -->
     
+    
+    
+    
     <!--Import jQuery before materialize.js-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
@@ -132,18 +139,54 @@
         Parse.initialize("VdWSfZSMsdaB6hfDRMFb1Ct4PJSqJErnABpwTRHW", "8DfK7ADN5SyQn1b9caOOQAhuaZCn1gX7wKSj1uRz");
         
         /* =======================================
+        ========== HELPER FUNCTIONS ==============
+        ======================================= */
+        
+        // called when user first logs in
+        var mainPageSetUp = function() {
+            // set HTML for building info
+            var institutionId = currentUser.get("InstitutionId");
+            
+            var Institution_Building_Mapping_Class = Parse.Object.extend("Institution_Building_Mapping");
+            var query = new Parse.Query(Institution_Building_Mapping_Class);
+            query.equalTo("InstitutionId", institutionId);
+            query.find({
+                success: function(results) {
+                    var buildingOptionsHTML = '<option value="" disabled selected>Select a building</option>';
+                    for (var i = 0; i < results.length; i++) {
+                        var object = results[i];
+                        buildingOptionsHTML += '<option value="' + object.get("BuildingId") + '">' + object.get("BuildingName") + '</option>';
+                    }
+                    $("#building-selection").html(buildingOptionsHTML);
+                    
+                    // initialize select with materialize
+                    $(document).ready(function() {
+                        $('select').material_select();
+                    });
+                },
+                error: function(error) {
+                    alert("Error: " + error.code + " " + error.message);
+                }
+            });
+        }
+        
+        /* =======================================
         ========== INITIALIZATION ================
         ======================================= */
         
         var currentUser = Parse.User.current();
         if (currentUser) {
             // see if regular user or admin (TODO: Implement 3 parse roles, "Site-Admin", "Institution-Admin", and then a user who exists without extra permissions, for certain levels, limit class write access
+            mainPageSetUp();
             $("#main-page").show();
             $("#admin-page").show();
+            
         } else {
             // not logged in, show splash page
             $("#splash-page").show();
         }
+        
+        
         
         /* =======================================
         ========== EVENT LISTENERS ===============
@@ -198,7 +241,7 @@
 //                      $("#splash-page").hide();
 //                      $("#main-page").show();
 //                      $("#admin-page").show();
-                      alert("Confirmation email sent, please follow the link sent to log in");
+                      alert("TODO: Get email verification working, just refresh page for now");
                   },
                   error: function(user, error) {
                     // Show the error message somewhere and let the user try again.
@@ -216,6 +259,8 @@
         $("#loginBtn").click(function() {
             Parse.User.logIn($("#email_reg").val(), $("#password_reg").val(), {
               success: function(user) {
+                mainPageSetUp();
+                
                 $("#splash-page").hide();
                 $("#main-page").show();
                 $("#admin-page").show();
@@ -224,6 +269,10 @@
                 alert("Error: " + error.code + " " + error.message);
               }
             });
+        });
+        
+        $("#building-selection").change(function() {
+            
         });
     </script>
 </body>
