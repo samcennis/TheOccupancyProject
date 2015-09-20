@@ -4,6 +4,7 @@ const char* ssid     = "IASTATE";
 const char* password = "";
 const char* host = "theoccupancyproject.parseapp.com";
 String API_KEY = "VdWSfZSMsdaB6hfDRMFb1Ct4PJSqJErnABpwTRHW";
+boolean lastState = false;
 
 void setup() {
   Serial.begin(115200);
@@ -19,12 +20,29 @@ void setup() {
   Serial.println("WiFi connected");  
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+
+  // Initally send out false state
+  sendState("18:FE:34:F4:D0:AF", false, false);
 }
 
 void loop() {
-  // Update sensor state every 20 seconds (lights currently not used)
-  sendState("18:FE:34:F4:D0:AF", false, true); 
-  delay(20000);
+  // Update sensor state every 15 seconds (lights currently not used)
+//  if(digitalRead(2) == HIGH) {
+//    sendState("18:FE:34:F4:D0:AF", false, true);
+//  } else {
+//    sendState("18:FE:34:F4:D0:AF", false, false);
+//  }
+
+  if(analogRead(A0) < 20) {
+    sendState("18:FE:34:F4:D0:AF", false, true);
+    lastState = true;
+    Serial.println("Waiting....");
+    delay(15000);
+  } else if(lastState == true){
+    sendState("18:FE:34:F4:D0:AF", false, false);
+    lastState = false;
+  }
+   
 }
 
 void sendState(String address, boolean lights, boolean occupied) {
