@@ -154,15 +154,19 @@
                 </div>
             
                 <div id="main-page" style="display: none;">
-                    <h2>Main Page</h2>
-                    <a class="waves-effect waves-light btn modal-trigger" id="logOffTrigger">Logoff</a>
+                    <div>Begin by selecting a building</div>
                     <br />
-                    <div class="input-field">
+                    <div class="input-field" style="width: 50%; display: inline-block;">
                         <select id="building-selection">
 
                         </select>    
                         <label>Building Selection</label>
                     </div>
+                    <div id="floor-selection">
+                        <label>Floor Selection</label>
+                    </div>
+                    
+                    <img id="floorPlanImg"  />
 
                 </div>
 
@@ -218,7 +222,7 @@
         var mainPageSetUp = function() {
             // update buttons in right nav
             var htmlForButtons = '<a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger" id="myAccountModalTrigger">My Account</a>';
-            htmlForButtons += '<a class="waves-effect waves-light btn modal-trigger" id="logoffModalTrigger">Logoff</a>';
+            htmlForButtons += '<a class="waves-effect waves-light btn modal-trigger" id="logoffTrigger">Logoff</a>';
             $(".nav-right").html(htmlForButtons);                
             
             
@@ -234,6 +238,7 @@
                         var object = results[i];
                         buildingOptionsHTML += '<option value="' + object.get("BuildingId") + '">' + object.get("BuildingName") + '</option>';
                     }
+                    
                     $("#building-selection").html(buildingOptionsHTML);
                     
                     // initialize select with materialize
@@ -275,14 +280,14 @@
             $('#loginModal').openModal(); 
         });
         
-        $(document).on("click","#logOffTrigger",function() {
+        $(document).on("click","#logoffTrigger",function() {
             Parse.User.logOut();
             $("#main-page").hide();
             $("#admin-page").hide();
             $("#splash-page").show();
         });
         
-        $(document).on("click","#myAccountTrigger",function() {
+        $(document).on("click","#myAccountModalTrigger",function() {
             alert("TODO : Add My Account modal");
         });
         
@@ -354,9 +359,40 @@
             });
         });
         
-        $("#building-selection").change(function() {
-             
+        $("#building-selection").change(function(e) {
+            // set floor selection buttons
+            var buildingId = $(this).val();
+            var institutionId = currentUser.get("InstitutionId");  
+            
+            // update floor map with first floor map
+            var Institution_Building_Mapping_Class = Parse.Object.extend("Institution_Building_Mapping");
+            var query = new Parse.Query(Institution_Building_Mapping_Class);
+            query.equalTo("BuildingId", buildingId);
+            query.first({
+                success: function(object) {
+                    // Successfully found building
+                    var numFloors =  object.get("NumFloors");
+                    var floorOptionsHTML = '<label>Floor Selection</label><br />';
+                    for (var i = 0; i < numFloors; i++) {
+                        floorOptionsHTML += '<div class="btn waves-effect waves-light floorBtn">' + (i+1) + '</div>';
+                    }
+                    
+                    floorOptionsHTML += "</div>";
+                    
+                    $("#floor-selection").html(floorOptionsHTML);
+                },
+                error: function(error) {
+                    // failed becuase institution isn't listed yet I think
+                    alert("Error: " + error.code + " " + error.message);
+                }
+            });
+            
+            // set room map to first floor
+            
+            // set to demo map for now
+            $("#floorPlanImg").attr("src","img/FloorPlans/First_Floor_demo.png");
         });
+                 
     </script>
     <script src="/js/wow.min.js"></script>
     <script>

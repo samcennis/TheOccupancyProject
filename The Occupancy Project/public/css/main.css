@@ -135,3 +135,28 @@ head {
 .modal {
     z-index: 9999;
 }
+
+#main-page {
+    max-width: 1000px;
+    padding: 15px;
+    border-radius: 3px;
+    background-color: rgba(255,255,255,.6);
+    margin: 0 auto;
+    margin-top: 25px;
+}
+
+#floor-selection {
+    width: 45%;
+    display: inline-block;
+    margin-left: 4%;
+}
+
+.floorBtn {
+    margin-right: 10px;
+}
+
+#floorPlanImg {
+    width: 100%;
+    background-color: rgba(255,255,255,1);
+    border-radius: 5px;
+}
