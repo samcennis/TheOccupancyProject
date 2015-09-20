@@ -1,9 +1,23 @@
+body{
+    font-family: 'Lato', sans-serif;   
+}
+
+
 head {
     
 }
 
 .btn {
     display: inline-block;
+}
+
+.navbar .btn{
+    background-color: #616161;   
+}
+
+.navbar .btn:hover{
+    background-color: #717171;
+    
 }
 
 .logoTitle {
@@ -17,7 +31,7 @@ head {
 
 .promo i {
     margin: 40px 0;
-    color: #ee6e73;
+    color: #039be5;
     font-size: 7rem;
     display: block;
 }
@@ -34,10 +48,9 @@ head {
     /text-shadow: 0 1px 3px rgba(0,0,0,.5);
 }
 
-.splash-container-wrapper {
+.splash-container-image {
     /*background-color: aliceblue;*/
-    background-image: url(/img/classroom.jpg);
-    
+  background-image: url(/img/classroom.jpg);
   background-size: cover;
   display: block;
   filter: blur(5px);
@@ -50,10 +63,10 @@ head {
 }
 
 .splash-content {
-     position: relative;
+  position: relative;
   left: 0;
   right: 0;
-  z-index: 9999;
+  z-index: 2;
   /*margin-left: 20px;
   margin-right: 20px;*/
 }
@@ -67,12 +80,58 @@ head {
     text-align: right;
     float: right;
     display: inline-block;
+    padding-top: 10px;
 }
 
 .navbar {
     display: inline-block;
     width: 100%;
-    background-color: #ee6e73;
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+    background-color: rgba(255,255,255,.5);
     padding: 10px;
+}
+
+.site-logo {
+    font-size: 36px;
+}
+
+.promo-description {
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 1.9rem;
+    line-height: 100%;
+    font-weight: 200;
+    text-align: center;
+}
+
+.promo-divider {
+    height: 1px;
+    overflow: hidden;
+    background-color: rgba(3, 155, 229, .4);
+    width: 90%;
+    margin: auto;
+    
+}
+
+.promo-caption {
+    font-size: 1.7rem;
+    font-weight: 500;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.splash-tagline {
+    font-size: 3.56rem;
+    line-height: 110%;
+    font-weight: 300;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.promo-card {
+    padding-bottom: 20px;
+}
+
+.modal {
+    z-index: 9999;
 }

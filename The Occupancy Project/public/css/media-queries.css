@@ -1,0 +1,14 @@
+/* For tablet devices */
+@media (max-width: 992px) {
+    
+    .nav-left, .nav-right {
+        width: 100%;
+        text-align: center;   
+    }    
+}
+
+/* For mobile devices */
+@media (max-width: 600px) {
+    
+    
+}
