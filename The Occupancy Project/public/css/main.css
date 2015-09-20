@@ -1,0 +1,56 @@
+
+head {
+    
+}
+
+.logoTitle {
+    font-style: italic;
+    font-weight: 100;
+}
+
+.splashSlogan {
+    font-stretch:extra-expanded; 
+}
+
+.promo i {
+    margin: 40px 0;
+    color: #ee6e73;
+    font-size: 7rem;
+    display: block;
+}
+
+.page-title {
+    /*font-style: italic;*/
+   /* color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,.5);*/
+}
+
+.cover-heading {
+    text-align: center;
+    /text-shadow: 0 1px 3px rgba(0,0,0,.5);
+}
+
+.splash-container-wrapper {
+    /*background-color: aliceblue;*/
+    background-image: url(/img/classroom.jpg);
+    
+  background-size: cover;
+  display: block;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  height: 800px;
+  left: 0;
+  position: fixed;
+  right: 0;
+  z-index: 1;
+}
+
+.splash-content {
+     position: relative;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  /*margin-left: 20px;
+  margin-right: 20px;*/
+}
