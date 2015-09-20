@@ -145,8 +145,7 @@
         // called when user first logs in
         var mainPageSetUp = function() {
             // set HTML for building info
-            var institutionId = currentUser.get("InstitutionId");
-            
+            var institutionId = currentUser.get("InstitutionId");            
             var Institution_Building_Mapping_Class = Parse.Object.extend("Institution_Building_Mapping");
             var query = new Parse.Query(Institution_Building_Mapping_Class);
             query.equalTo("InstitutionId", institutionId);
@@ -168,6 +167,8 @@
                     alert("Error: " + error.code + " " + error.message);
                 }
             });
+            
+            
         }
         
         /* =======================================
@@ -272,7 +273,7 @@
         });
         
         $("#building-selection").change(function() {
-            
+             
         });
     </script>
 </body>
