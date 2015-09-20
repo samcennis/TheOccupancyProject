@@ -374,7 +374,7 @@
                     var numFloors =  object.get("NumFloors");
                     var floorOptionsHTML = '<label>Floor Selection</label><br />';
                     for (var i = 0; i < numFloors; i++) {
-                        floorOptionsHTML += '<div class="btn waves-effect waves-light floorBtn">' + (i+1) + '</div>';
+                        floorOptionsHTML += '<div class="btn waves-effect waves-light floorBtn" value="' + (i+1) + '">' + (i+1) + '</div>';
                     }
                     
                     floorOptionsHTML += "</div>";
@@ -391,6 +391,19 @@
             
             // set to demo map for now
             $("#floorPlanImg").attr("src","img/FloorPlans/First_Floor_demo.png");
+        });
+        
+        $(document).on("click",".floorBtn",function() {
+            var floorVal = $(this).attr("value");
+            if (floorVal == 1) {
+                $("#floorPlanImg").attr("src","img/FloorPlans/First_Floor_demo.png");
+            } 
+            if (floorVal == 2) {
+                $("#floorPlanImg").attr("src","img/FloorPlans/Second_Floor_demo.psd.png");
+            }
+            if (floorVal == 3) {
+                $("#floorPlanImg").attr("src","img/FloorPlans/Third_Floor.psd.png");
+            }
         });
                  
     </script>
