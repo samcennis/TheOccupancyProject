@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="CSS/main.css">    
+</head>
+    
+    
+
+<body>    
+    <div class="site-wrapper">
+        <div class="site-wrapper-inner">
+
+            <div class="splash-container-image"></div>
+
+            <div class="splash-content">
+
+                <!-- Navbar -->
+                <div class="navbar">
+                    <div class="container">
+<!--
+                        <div class="nav-left">
+                            <a href="./index.html" class="site-logo">The Occupancy Project</a>               
+                        </div>
+-->
+                        <div class="nav-right">
+                            <a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger">THE PROJECT</a>
+                            <a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger">THE TEAM</a>
+                            <a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger">REPORTS</a>
+                            <a class="waves-effect waves-light btn modal-trigger">CONTACT</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Splash Page  -->
+                <div id="main-page" style="">
+                    <div id="body-container">
+                        <div>
+                            <div style="width: 100%; font-size: 48px;">The Occupancy Project</div>
+                            <div style="width: 100%; font-size: 26px; margin-top: -8px;">Group 36 - SE 491</div>
+                            <div style="font-style: italic; font-size: 18px;">Team Members:</div>
+                            <div style="font-style: italic;">Shaun VanWeelden, Sam Ennis, Lee Robinson, Mike Pruszinske</div>
+                        </div>                                
+                    
+                        <div class="section-wrapper">
+                            <div class="section-header">Project Overview</div>
+
+                            <div>
+                                <iframe src="https://docs.google.com/presentation/d/186-1yrdYTVLQj6bwY5oEQdbG6l0m_y0IPgW5mYFLliM/embed?start=false&loop=true&delayms=5000" frameborder="0" width="900" height="520" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+                            </div>
+
+                            <div class="subsection-wrapper">
+                                <div class="subsection-header">Project Abstract</div>
+
+                                <div>
+                                    <span>Recently, homes and offices around the country have been rapidly connecting to the web via the Internet of Things, providing people with previously unknown information that can offer widespread beneficial effects. We want to provide these benefits to Iowa State University as well by making its lecture halls, classrooms, and offices "smart". Our project makes use of IoT data to reveal classroom availability information to both Iowa State students and staff.</span>
+                                    <br /><br />
+                                    <span>Rooms around the university will report their current occupancy status via an occupancy sensor to a user-friendly web application. With this new room occupancy information, students can make informed choices about where to study and meet, and the university can make informed decisions using our application's analytics about classroom usage (room popularity, energy consumption, etc.). Because of Iowa State's continued growth in enrollment, managing classroom usage effectively is more important than ever. The Occupancy Project will help Iowa State get the most out of their current buildings and be at the forefront of smart and sustainable technologies.</span>
+                                </div>
+                            </div>      
+                            
+                            <div class="subsection-wrapper">
+                                <div class="subsection-header">Inspiration</div>
+
+                                <div>
+                                    <span>As students, we know how difficult it can be to find an open room for a team meeting, group homework session, or some quiet studying. Especially around midterms and finals, it sucks to spend precious study time wandering around campus looking for the right spot. We think we can leverage our skills and the Internet of Things to solve this problem by making Iowa State’s lecture halls, classrooms, and study spots "smart".</span>
+                                </div>
+                            </div> 
+                            
+                            <div class="subsection-wrapper">
+                                <div class="subsection-header">What It Does</div>
+
+                                <div>
+                                    <span>Using the sensor hardware we built, we will be able to report the current occupancy status of a room to a user-friendly web application. This will be done in real-time, so all students have to do is go to our website, select a building, and we’ll show them the open areas in that part of campus! With this new room occupancy information, students can make informed choices about where to study and meet. As an added bonus, this hardware can also indicate whether the lights in a room are on or off. This allows the university to make informed decisions using analytics from our application about classroom usage, room popularity, energy consumption. Because of Iowa State’s continued growth in enrollment, managing classroom usage effectively is more important than ever. The Occupancy Project will help Iowa State get the most out of their current buildings and be at the forefront of smart and sustainable technologies.</span>
+                                </div>
+                            </div> 
+                            
+                            <div class="subsection-wrapper">
+                                <div class="subsection-header">How We Built It</div>
+
+                                <div>
+                                    <span>At the core of our hardware, we used an Adafruit HUZZAH ESP8266 breakout WiFi microcontroller to connect to the ISU network and transmit the signals. For occupancy detection we used an IR sensor and photo resistors to determine light status. We used the Arduino IDE and C to program the hardware. On the software end, we used Parse to manage the data received from the hardware and Materialize framework (CSS/JavaScript/HTML) for the front-end.</span>
+                                </div>
+                            </div> 
+                            
+                            <div class="subsection-wrapper">
+                                <div class="subsection-header">What's Next For The Occupancy Project?</div>
+
+                                <div>
+                                    <span>We think we can make this concept a reality and bring true value to ISU students. Our first goal is to get ECpE department permission to set up our system in rooms throughout Coover Hall as a test environment. Once we show the value of our product on this small scale, we will bring the idea to Student Government and request a wider implementation across campus. In the meantime, we will continue to build out our web application so that it’s intuitive and easy-to-use.</span>
+                                </div>
+                            </div> 
+                            
+                            <div class="subsection-wrapper">
+                                <div class="subsection-header">MVP (Minimum Viable Product) Goal:</div>
+
+                                <div>
+                                    <span>Make our own device for analyzing room occupancy. It will be able to detect when a room has someone in it and also whether the lights are on or off. We will use WiFi to save activity status online and display the information in a meaningful way via a web application interface. Our goal is to have this MVP completed by the end of Fall semester 2015.</span>
+                                </div>
+                            </div> 
+                            
+                            <div class="subsection-wrapper">
+                                <div class="subsection-header">Stretch Goals</div>
+
+                                <div>
+                                    <span>Once we have completed our MVP in the Fall, we will spend the Spring semester working on implementing some of our stretch goals.</span><br>
+                                    <ul>
+                                        <li>- Integrate room occupancy information into the MyState app </li>
+                                        <li>- Be able to toggle classroom lights on and off with device</li>
+                                        <li>- Count the number of individuals in the room/gym/court</li>
+                                        <li>- Live-stream the room</li>
+                                        <li>- Book a room</li>
+                                        <li>- Scale to classrooms around Iowa State University</li>
+                                    </ul>
+                                </div>
+                            </div>     
+                        </div>
+                        
+                        <div class="section-wrapper">
+                            <div class="section-header">The Team</div>
+
+                            <div class="subsection-wrapper">
+                                <div style="width: 49%; vertical-align: top;">
+                                    <div class="subsection-header">Team Roles</div>
+                                    <p>Shaun VanWeelden - Team Lead</p>
+                                    <p>Sam Ennis - Web Jedi </p>
+                                    <p>Lee Robinson - Key Synergy Holder</p>
+                                    <p>Mike Pruszinske - Communication Master</p>
+                                </div>
+                                <div style="width: 50%;">
+                                    <img src="img/team_pic.jpg" style="width: 100%;">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-wrapper">
+                            <div class="section-header">Project Reports</div>
+
+                            <div class="subsection-wrapper">
+                                <div class="subsection-header">Weekly Reports</div>
+                                Content goes here, note that all div's are automatically styled as "display: inline-block" - shouldn't change anything for this content
+                            </div>
+                        </div>
+                        
+                        <div class="section-wrapper">
+                            <div class="section-header">Connect with Us</div>
+
+                            <div class="subsection-wrapper">
+                                <div class="subsection-header">Team Emails</div>
+                                Content goes here, note that all div's are automatically styled as "display: inline-block" - shouldn't change anything for this content
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>                                                                                        
+        </div>
+    </div>             
+    
+    
+    
+    
+    
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>    
+</body>
+</html>

@@ -1,0 +1,158 @@
+body{
+    font-family: 'Lato', sans-serif;   
+}
+
+
+head {
+    
+}
+
+div {
+    display: inline-block;
+}
+
+.btn {
+    display: inline-block;
+}
+
+.site-wrapper-inner {
+    width: 100%;
+}
+
+.navbar .btn{
+    background-color: #616161;   
+}
+
+.navbar .btn:hover{
+    background-color: #717171;
+    
+}
+
+.logoTitle {
+    font-style: italic;
+    font-weight: 100;
+}
+
+.splashSlogan {
+    font-stretch:extra-expanded; 
+}
+
+.cover-heading {
+    text-align: center;
+    /text-shadow: 0 1px 3px rgba(0,0,0,.5);
+}
+
+.splash-container-image {
+    /*background-color: aliceblue;*/
+  background-image: url(../img/classroom.jpg);
+  background-size: cover;
+  display: block;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  height: 800px;
+  left: 0;
+  position: fixed;
+  right: 0;
+  z-index: 1;
+}
+
+.splash-content {
+  position: relative;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  /*margin-left: 20px;
+  margin-right: 20px;*/
+}
+
+.nav-left {
+    float: left;
+    display: inline-block;
+}
+
+/*
+.nav-right {
+    text-align: right;
+    float: right;
+    display: inline-block;
+    padding-top: 10px;
+}
+*/
+
+.nav-right {
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+}
+
+.navbar {
+    display: inline-block;
+    width: 100%;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+    background-color: rgba(255,255,255,.5);
+    padding: 10px;
+    text-align: center;
+}
+
+.site-logo {
+    font-size: 36px;
+}
+
+#main-page {
+    text-align: center;
+    width: 100%;
+}
+
+#body-container {
+    width: 1000px;
+    padding: 15px;
+    background-color: rgba(245,245,240,.95);
+    border-style: solid;
+    border-width: 2px;
+    border-color: #ddd;
+    border-radius: 10px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+.section-wrapper {
+    background-color: rgba(255,255,255,.7);
+    padding: 10px;
+    border-radius: 7px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ddd;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.section-header {
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    padding-top: 0px;
+    font-size: 30px;
+    color: #039be5;
+    font-weight: bold;
+}
+
+.subsection-wrapper {
+    padding: 10px;
+    background-color: #fff;
+    margin: 10px 0px;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ccc;
+    text-align: left;
+    color: #777;
+    font-size: 17px;
+    width: 100%;
+}
+
+.subsection-header {
+    padding: 5px;
+    font-size: 25px;
+    color: #000;
+    width: 100%;
+}
