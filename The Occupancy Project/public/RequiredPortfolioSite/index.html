@@ -8,7 +8,6 @@
     <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 
     <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="CSS/main.css">    
 </head>
     
@@ -31,10 +30,10 @@
                         </div>
 -->
                         <div class="nav-right">
-                            <a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger">THE PROJECT</a>
-                            <a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger">THE TEAM</a>
-                            <a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger">REPORTS</a>
-                            <a class="waves-effect waves-light btn modal-trigger">CONTACT</a>
+                            <a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger" href="#project">THE PROJECT</a>
+                            <a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger" href="#team">THE TEAM</a>
+                            <a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger" href="#reports">REPORTS</a>
+                            <a class="waves-effect waves-light btn modal-trigger" href="#connect">CONTACT</a>
                         </div>
                     </div>
                 </div>
@@ -49,7 +48,7 @@
                             <div style="font-style: italic;">Shaun VanWeelden, Sam Ennis, Lee Robinson, Mike Pruszinske</div>
                         </div>                                
                     
-                        <div class="section-wrapper">
+                        <div class="section-wrapper" id="project">
                             <div class="section-header">Project Overview</div>
 
                             <div>
@@ -123,7 +122,7 @@
                             </div>     
                         </div>
                         
-                        <div class="section-wrapper">
+                        <div class="section-wrapper" id="team">
                             <div class="section-header">The Team</div>
 
                             <div class="subsection-wrapper">
@@ -140,21 +139,36 @@
                             </div>
                         </div>
                         
-                        <div class="section-wrapper">
+                        <div class="section-wrapper" id="reports">
                             <div class="section-header">Project Reports</div>
 
                             <div class="subsection-wrapper">
                                 <div class="subsection-header">Weekly Reports</div>
-                                Content goes here, note that all div's are automatically styled as "display: inline-block" - shouldn't change anything for this content
+                                <a href="Week1Report.pdf" target="_blank">Week 1</a><br>
+                                <a href="Week2Report.pdf" target="_blank">Week 2</a><br>
+                                <a href="Week3Report.pdf" target="_blank">Week 3</a><br>
+                                <a href="Week4Report.pdf" target="_blank">Week 4</a>
+                            </div>
+                            
+                            <div class="subsection-wrapper">
+                                <div class="subsection-header">Other Documents and Links</div>
+                                <a href="SeniorDesignProjectProposal.pdf" target="_blank">Project Proposal</a><br>
+                                <a href="Budget.pdf" target="_blank">Budget</a><br>
+                                <a href="http://devpost.com/software/the-occupancy-project" target="_blank">DevPost (from HackISU)</a>
                             </div>
                         </div>
                         
-                        <div class="section-wrapper">
+                        <div class="section-wrapper" id="connect">
                             <div class="section-header">Connect with Us</div>
 
                             <div class="subsection-wrapper">
                                 <div class="subsection-header">Team Emails</div>
-                                Content goes here, note that all div's are automatically styled as "display: inline-block" - shouldn't change anything for this content
+                                <p>Team Email - <a href="mailto:may1636@iastate.edu">may1636@iastate.edu</a> - (Goes to Everyone)</p>
+                                <p>Shaun VanWeelden - <a href="mailto:shaun314@iastate.edu">shaun314@iastate.edu</a> - Team Lead</p>
+                                <p>Sam Ennis - <a href="mailto:sennis@iastate.edu">sennis@iastate.edu</a> - Web Jedi </p>
+                                <p>Lee Robinson - <a href="mailto:leerob@iastate.edu">leerob@iastate.edu</a> - Key Synergy Holder</p>
+                                <p>Mike Pruszinske - <a href="mailto:mikep@iastate.edu">mikep@iastate.edu</a> - Communication Master</p>
+                                <p>Mani Mina - <a href="mailto:mmina@iastate.edu">mmina@iastate.edu</a> - Faculty Advisor/Sponsor</p>
                             </div>
                         </div>
                         
@@ -164,12 +178,26 @@
         </div>
     </div>             
     
-    
-    
-    
-    
     <!--Import jQuery before materialize.js-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>    
+    
+    <!-- Smooth Scrolling -->
+    <script>
+        $(document).ready(function(){
+        $('a[href^="#"]').on('click',function (e) {
+            e.preventDefault();
+
+            var target = this.hash;
+            var $target = $(target);
+
+            $('html, body').stop().animate({
+                'scrollTop': $target.offset().top-40
+            }, 900, 'swing', function () {
+                window.location.hash = target;
+            });
+        });
+    });
+    </script>
 </body>
 </html>
