@@ -193,3 +193,30 @@ $(document).on("click",".floorBtn",function() {
         $("#floorPlanImg").attr("src","img/FloorPlans/Third_Floor.psd.png");
     }
 });
+
+$("#dummyPingButton").click(function() {
+    var SensorReading = Parse.Object.extend("SensorReading");
+    var sensorReading = new SensorReading();
+    
+    sensorReading.set("MACAddress", $("#macAddr").val());
+    sensorReading.set("occupied", ("true" == $('input:radio[name=dummyMotion]:checked').val()));
+    sensorReading.set("lightsRaw", parseInt($("#dummyLightValue").val()));
+    
+    /*Parse.Cloud.run("saveSensorReading", { sensorReading: sensorReading }, { 
+        success: function(result) {   
+            alert( "Hello" + result );
+        },
+        error: function(error) {
+            alert( error.message );
+        }
+    });*/
+      
+    sensorReading.save(null, {
+        success: function(sensorReading) {
+            alert('New SensorReading created with objectId: ' + sensorReading.id); 
+        },
+        error: function(sensorReading, error) {
+            alert('Failed to create new object, with error code: ' + error.message);   
+        }
+    });
+});
