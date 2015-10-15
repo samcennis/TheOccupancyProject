@@ -5,6 +5,6 @@ function generate10DigitID() {
         return s ? p.substr(0,2) : p ;
     }
     
-    return _p8() + _p8(true); 
+    return (_p8() + _p8(true)).toUpperCase(); 
 }     
 

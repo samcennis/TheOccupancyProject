@@ -135,6 +135,7 @@ head {
 
 .modal {
     z-index: 9999;
+    max-width: 350px;
 }
 
 #main-page {
@@ -165,8 +166,21 @@ head {
     margin-right: 10px;
 }
 
+#floorPlanWrapper {
+    position: relative;
+    background-color: white;
+    border-radius: 10px;
+}
+
 #floorPlanImg {
     width: 100%;
-    background-color: rgba(255,255,255,1);
     border-radius: 5px;
+    z-index: 2;
+    position: relative;
+}
+
+.floorPlanMarker {
+    position: absolute;
+    z-index: 1;
+    width: 5%;
 }

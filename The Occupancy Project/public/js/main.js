@@ -6,6 +6,10 @@ Parse.initialize("VdWSfZSMsdaB6hfDRMFb1Ct4PJSqJErnABpwTRHW", "8DfK7ADN5SyQn1b9ca
 
 // called when user first logs in
 var mainPageSetUp = function(user) {
+    
+    // set global variable currentUser to user
+    currentUser = user;
+    
     // update buttons in right nav
     var htmlForButtons = '<a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger" id="myAccountModalTrigger">My Account</a>';
     htmlForButtons += '<a class="waves-effect waves-light btn modal-trigger" id="logoffTrigger">Logoff</a>';
@@ -36,8 +40,6 @@ var mainPageSetUp = function(user) {
             alert("Error: " + error.code + " " + error.message);
         }
     });
-
-
 }
 
 /* =======================================
@@ -168,31 +170,81 @@ $("#building-selection").change(function(e) {
             floorOptionsHTML += "</div>";
 
             $("#floor-selection").html(floorOptionsHTML);
+            
+            // set room map to first floor
+            $(".floorBtn")[0].click();
         },
         error: function(error) {
             // failed becuase institution isn't listed yet I think
             alert("Error: " + error.code + " " + error.message);
         }
     });
-
-    // set room map to first floor
-
-    // set to demo map for now
-    $("#floorPlanImg").attr("src","img/FloorPlans/First_Floor_demo.png");
 });
+
+var addMarkerToFloorPlan = function(roomId, percentX, percentY) {
+    
+    // make sure percentX and percentY are valid coordinates
+    if (!percentX || !percentY) {
+        return;
+    }
+    
+    var RoomSummary_Class = Parse.Object.extend("RoomSummary");
+    var query = new Parse.Query(RoomSummary_Class);
+    query.equalTo("roomId", roomId);
+    query.find({
+        success: function(results) {
+            for (var j = 0; j < results.length; j++) {
+                var roomSummary = results[j];
+                var occupiedFlag = roomSummary.get("occupied");                           
+
+                // add marker to map
+                if (occupiedFlag) {
+                    $("#floorPlanWrapper").append('<img class="floorPlanMarker" style="top: ' + percentY + '%; left: ' + percentX + '%;" src="img/OccupancyMarkers/O.png" />');
+                } else {
+                    $("#floorPlanWrapper").append('<img class="floorPlanMarker" style="top: ' + percentY + '%; left: ' + percentX + '%;" src="img/OccupancyMarkers/X.png" />');
+                }
+            }
+        },
+        error: function(error) {
+            alert("Error: " + error.code + " " + error.message);
+        }
+    });
+}
 
 $(document).on("click",".floorBtn",function() {
     var floorVal = $(this).attr("value");
-    if (floorVal == 1) {
-        $("#floorPlanImg").attr("src","img/FloorPlans/First_Floor_demo.png");
-    } 
-    if (floorVal == 2) {
-        $("#floorPlanImg").attr("src","img/FloorPlans/Second_Floor_demo.psd.png");
-    }
-    if (floorVal == 3) {
-        $("#floorPlanImg").attr("src","img/FloorPlans/Third_Floor.psd.png");
-    }
+    var buildingId = $("#building-selection").val();
+    var institutionId = currentUser.get("InstitutionId");
+    
+    // create map html
+    var mapHtml = "";
+    
+    mapHtml += '<img id="floorPlanImg" src="img/FloorPlans/' + institutionId + "_" + buildingId + "_" + floorVal + '.png" />';
+    $("#floorPlanWrapper").html(mapHtml);   
+    
+    // for each room on that buildings floor, look at x,y coordinates of room and sensor data 
+    var RoomMapInfo_Class = Parse.Object.extend("RoomMapInfo");
+    var query = new Parse.Query(RoomMapInfo_Class);
+    query.equalTo("buildingId", buildingId);
+    query.equalTo("floor", floorVal);
+    query.find({
+        success: function(results) {
+            for (var i = 0; i < results.length; i++) {
+                var roomMapInfo = results[i];
+                var roomId = roomMapInfo.get("roomId");
+                var percentX = roomMapInfo.get("percentX");
+                var percentY = roomMapInfo.get("percentY");
+                
+                addMarkerToFloorPlan(roomId, percentX, percentY);
+                
+            }
+        },
+        error: function(error) {
+            alert("Error: " + error.code + " " + error.message);
+        }
+    });
 });
+
 
 $("#dummyPingButton").click(function() {
     var SensorReading = Parse.Object.extend("SensorReading");
