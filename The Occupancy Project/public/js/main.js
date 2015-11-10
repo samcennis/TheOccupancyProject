@@ -190,7 +190,7 @@ var addMarkerToFloorPlan = function(roomId, percentX, percentY) {
     
     var RoomSummary_Class = Parse.Object.extend("RoomSummary");
     var query = new Parse.Query(RoomSummary_Class);
-    query.equalTo("roomId", roomId);
+    query.equalTo("objectId", roomId);
     query.find({
         success: function(results) {
             for (var j = 0; j < results.length; j++) {
