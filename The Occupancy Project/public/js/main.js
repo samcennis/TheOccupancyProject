@@ -199,9 +199,9 @@ var addMarkerToFloorPlan = function(roomId, percentX, percentY) {
 
                 // add marker to map
                 if (occupiedFlag) {
-                    $("#floorPlanWrapper").append('<img class="floorPlanMarker" style="top: ' + percentY + '%; left: ' + percentX + '%;" src="img/OccupancyMarkers/O.png" />');
-                } else {
                     $("#floorPlanWrapper").append('<img class="floorPlanMarker" style="top: ' + percentY + '%; left: ' + percentX + '%;" src="img/OccupancyMarkers/X.png" />');
+                } else {
+                    $("#floorPlanWrapper").append('<img class="floorPlanMarker" style="top: ' + percentY + '%; left: ' + percentX + '%;" src="img/OccupancyMarkers/O.png" />');
                 }
             }
         },
