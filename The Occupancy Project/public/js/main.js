@@ -42,6 +42,36 @@ var mainPageSetUp = function(user) {
     });
 }
 
+var updateDummyPingCurrentBuilding = function(buildingID) {
+    
+    var RoomSummary = Parse.Object.extend("RoomSummary");
+    var query = new Parse.Query(RoomSummary);
+    
+    query.equalTo("buildingId", buildingID);
+    query.ascending("roomName");
+    
+    query.find({
+        success: function(results) {
+            var dummyPingRoomOptionsHTML = '<option value="" disabled selected>Select a room</option>';
+            
+            for (var i = 0; i < results.length; i++) {
+                var object = results[i];
+                dummyPingRoomOptionsHTML += '<option value="' + object.get("objectId") + '">' + object.get("roomName") + '</option>';
+            }
+
+            $("#dummy-room-selection").html(dummyPingRoomOptionsHTML);
+            
+            $('select').material_select();
+            
+        },
+        error: function(error) {
+            alert("Error: " + error.code + " " + error.message);
+        }
+    });
+    
+    
+}
+
 /* =======================================
 ========== INITIALIZATION ================
 ======================================= */
@@ -154,6 +184,9 @@ $("#building-selection").change(function(e) {
     var buildingId = $(this).val();
     var institutionId = currentUser.get("InstitutionId");  
 
+    //Update Admin Dummy Ping selection for rooms in the current building
+    updateDummyPingCurrentBuilding(buildingId);
+    
     // update floor map with first floor map
     var Institution_Building_Mapping_Class = Parse.Object.extend("Institution_Building_Mapping");
     var query = new Parse.Query(Institution_Building_Mapping_Class);
@@ -247,28 +280,36 @@ $(document).on("click",".floorBtn",function() {
 
 
 $("#dummyPingButton").click(function() {
-    var SensorReading = Parse.Object.extend("SensorReading");
+    /*var SensorReading = Parse.Object.extend("SensorReading");
     var sensorReading = new SensorReading();
     
     sensorReading.set("MACAddress", $("#macAddr").val());
     sensorReading.set("occupied", ("true" == $('input:radio[name=dummyMotion]:checked').val()));
     sensorReading.set("lightsRaw", parseInt($("#dummyLightValue").val()));
     
-    /*Parse.Cloud.run("saveSensorReading", { sensorReading: sensorReading }, { 
+    sensorReading.save(null, {
+    success: function(sensorReading) {
+        alert('New SensorReading created with objectId: ' + sensorReading.id); 
+    },
+    error: function(sensorReading, error) {
+        alert('Failed to create new object, with error code: ' + error.message);   
+    }
+    });*/
+    
+    var req = { 
+        "MACAddress": $("#macAddr").val(),
+        "occupied": ("true" == $('input:radio[name=dummyMotion]:checked').val()),
+        "lightsRaw": parseInt($("#dummyLightValue").val())
+    };
+    
+    Parse.Cloud.run("dummySensorPing", req, { 
         success: function(result) {   
-            alert( "Hello" + result );
+            alert('Sent dummy ping. ' + result); 
         },
         error: function(error) {
-            alert( error.message );
-        }
-    });*/
-      
-    sensorReading.save(null, {
-        success: function(sensorReading) {
-            alert('New SensorReading created with objectId: ' + sensorReading.id); 
-        },
-        error: function(sensorReading, error) {
-            alert('Failed to create new object, with error code: ' + error.message);   
+            alert( error );
         }
     });
+      
+
 });

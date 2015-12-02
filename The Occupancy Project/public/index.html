@@ -179,11 +179,15 @@
                     <div class="container">
                         <form class="col s12">
                             <div class="row">
-                                <div class="input-field col s4">
+                                <div class="input-field col s3">
+                                    <span>Room Selection</span>
+                                    <select id="dummy-room-selection" class="browser-default"></select> 
+                                </div>
+                                <div class="input-field col s3">
                                     <input id="macAddr" type="text" class="validate" value="XX:XX:XX:XX:XX:XX">
                                     <label for="macAddr">MAC Addr</label>
                                 </div>
-                                <div class="col s4">
+                                <div class="col s3">
                                     <p>
                                       <input name="dummyMotion" type="radio" id="dummyYesMotion" value="true" checked="checked" />
                                       <label for="dummyYesMotion">Motion</label>
@@ -193,7 +197,7 @@
                                       <label for="dummyNoMotion">No Motion</label>
                                     </p>
                                 </div>
-                                <div class="input-field col s4">
+                                <div class="input-field col s3">
                                     <p class="range-field">
                                         <input type="range" id="dummyLightValue" min="0" max="100" />
                                         
