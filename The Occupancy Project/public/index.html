@@ -164,8 +164,8 @@
                             <label>Building Selection</label>
                     </div>   
                     <ul id="view-tabs" class="tabs">
-                        <li class="tab"><a class="active" href="#list">List</a></li>
-                        <li class="tab"><a href="#map">Map</a></li>
+                        <li class="tab"><a id="list-tab" class="active" href="#list">List</a></li>
+                        <li class="tab"><a id="map-tab" href="#map">Map</a></li>
                     </ul>
                     <div id="map">             
                         <div id="floor-selection">
@@ -181,6 +181,9 @@
                         <ul id="room-list" class="collapsible" data-collapsible="accordion">
                             
                         </ul>
+                    </div>
+                    <div id="loader" class="progress" style="display: none;">
+                        <div class="indeterminate"></div>
                     </div>
                 </div>
 

@@ -182,9 +182,25 @@ $("#loginBtn").click(function() {
     });
 });
 
+
+$( "#list-tab" ).click(function() {
+   if ($("#room-list").html() == ""){
+        queryBuildingForListView($("#building-selection").val());
+    }
+});
+
+$( "#map-tab" ).click(function() {
+    if ($("#floorPlanWrapper").html() == ""){
+        queryBuildingForMapView($("#building-selection").val());
+    }
+});
+
 $("#building-selection").change(function(e) {     
     // set floor selection buttons
     var buildingId = $(this).val();
+    
+    $("#room-list").html("");        //clear list view
+    $("#floorPlanWrapper").html(""); //clear map view
     
     //Update Admin Dummy Ping selection for rooms in the current building
     updateDummyPingCurrentBuilding(buildingId);
@@ -200,6 +216,9 @@ $("#building-selection").change(function(e) {
 });
 
 var queryBuildingForMapView = function(buildingId){
+    
+    $("#loader").show();
+    
     var Building_Class = Parse.Object.extend("Building");
     var query = new Parse.Query(Building_Class);
     query.get( buildingId, {
@@ -212,31 +231,52 @@ var queryBuildingForMapView = function(buildingId){
             }
 
             floorOptionsHTML += "</div>";
-
+            
             $("#floor-selection").html(floorOptionsHTML);
             $("#floor-selection").show();
-            
+  
             // set room map to first floor
-            $(".floorBtn")[0].click();
+            if ($(".floorBtn")[0] != undefined){
+                
+                $(".floorBtn")[0].click();
+            }
+            else {
+                $("#floorPlanWrapper").html("Map of this building not available.");
+                $("#loader").hide();
+            }
         },
         error: function(error) {
-            // failed becuase institution isn't listed yet I think
-            alert("Error: " + error.code + " " + error.message);
+                $("#floorPlanWrapper").html("Map of this building not available.");
+                $("#loader").hide();
+           
         }
     }); 
 }
 
 var queryBuildingForListView = function(buildingId){
-    //Clear current list view
-    $("#room-list").html("");
+    
+    $("#loader").show();
     
     var Room_Class = Parse.Object.extend("Room");
     var query = new Parse.Query(Room_Class);
     query.equalTo("buildingId", buildingId);
+    query.ascending("name");
     query.find({
         success: function(results) {
+            $("#loader").hide();
             results.forEach(function(item) {
-                $("#room-list").append('<li><div class="collapsible-header"><span>' + item.get("name") + '</span><span class="right">' + (item.get("occupied") ? 'Occupied' : 'Open') + '</span></div><div class="row collapsible-body"><div class="col s3"><img class="responsive-img" src="http://placehold.it/450x315"></div><div class="col s9"><p>Room information right here.</p></div></div></li>');    
+                $("#room-list").append('<li><div class="collapsible-header"><span>' + item.get("buildingName") + " " + item.get("name") + '</span><span class="right">' + (item.get("occupied") ? '<span class="red-text">Occupied</span>' : '<span class="green-text">Open</span>') + '</span></div><div class="row collapsible-body"><div class="col s3"><img class="responsive-img" src="' + item.get("imageURL") + '"></div><div class="col s9"><div>Max capacity: <b>' + item.get("maxCapacity") + '</b></div><i class="material-icons">info</i> ' + 
+                (item.get("fixedFurniture")         ? '<div class="chip">Fixed furniture</div>' : '') +
+                (item.get("moveableFurniture")      ? '<div class="chip">Moveable furniture</div>' : '') +
+                (item.get("airConditioning")        ? '<div class="chip">Air conditioning</div>' : '') +
+                (item.get("whiteBoard")             ? '<div class="chip">White board</div>' : '') +
+                (item.get("documentCamera")         ? '<div class="chip">Document camera</div>' : '') +
+                (item.get("chalkBoard")             ? '<div class="chip">Chalk board</div>' : '') +
+                (item.get("audioConnection")        ? '<div class="chip">Audio connection</div>' : '') +
+                (item.get("deptComputerAvailable")  ? '<div class="chip">Department computer available</div>' : '') +
+                (item.get("doubleProjectors")       ? '<div class="chip">Double projectors</div>' : '') +
+                (item.get("dvdVideoComputerOutput") ? '<div class="chip">DVD Video Computer Output</div>' : '') +
+                '</ul></div></div></li>');    
             });
             //Initialize accordion:
             $('.collapsible').collapsible({
@@ -289,7 +329,8 @@ $(document).on("click",".floorBtn",function() {
     var mapHtml = "";
     
     mapHtml += '<img id="floorPlanImg" src="img/FloorPlans/' + institutionId + "_" + buildingId + "_" + floorVal + '.png" />';
-    $("#floorPlanWrapper").html(mapHtml);   
+
+    $("#floorPlanWrapper").html(mapHtml); 
     
     // for each room on that buildings floor, look at x,y coordinates of room and sensor data 
     var RoomMapInfo_Class = Parse.Object.extend("RoomMapInfo");
