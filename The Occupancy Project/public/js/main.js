@@ -14,19 +14,22 @@ var mainPageSetUp = function(user) {
     var htmlForButtons = '<a style="margin-right: 10px" class="waves-effect waves-light btn modal-trigger" id="myAccountModalTrigger">My Account</a>';
     htmlForButtons += '<a class="waves-effect waves-light btn modal-trigger" id="logoffTrigger">Logoff</a>';
     $(".nav-right").html(htmlForButtons);                
-
-
+    
+    // Hide floor selection until building is selected
+    $("#floor-selection").hide();
+    
     // set HTML for building info
     var institutionId = user.get("InstitutionId");            
-    var Institution_Building_Mapping_Class = Parse.Object.extend("Institution_Building_Mapping");
-    var query = new Parse.Query(Institution_Building_Mapping_Class);
-    query.equalTo("InstitutionId", institutionId);
+    var Building_Class = Parse.Object.extend("Building");
+    var query = new Parse.Query(Building_Class);
+    query.equalTo("institutionId", institutionId);
+    query.ascending("name");
     query.find({
         success: function(results) {
             var buildingOptionsHTML = '<option value="" disabled selected>Select a building</option>';
             for (var i = 0; i < results.length; i++) {
-                var object = results[i];
-                buildingOptionsHTML += '<option value="' + object.get("BuildingId") + '">' + object.get("BuildingName") + '</option>';
+                var building = results[i];
+                buildingOptionsHTML += '<option value="' + building.id + '">' + building.get("name") + '</option>';
             }
 
             $("#building-selection").html(buildingOptionsHTML);
@@ -179,22 +182,30 @@ $("#loginBtn").click(function() {
     });
 });
 
-$("#building-selection").change(function(e) {
+$("#building-selection").change(function(e) {     
     // set floor selection buttons
     var buildingId = $(this).val();
-    var institutionId = currentUser.get("InstitutionId");  
-
+    
     //Update Admin Dummy Ping selection for rooms in the current building
     updateDummyPingCurrentBuilding(buildingId);
-    
-    // update floor map with first floor map
-    var Institution_Building_Mapping_Class = Parse.Object.extend("Institution_Building_Mapping");
-    var query = new Parse.Query(Institution_Building_Mapping_Class);
-    query.equalTo("BuildingId", buildingId);
-    query.first({
+    //if map tab active
+    if ($('a[href="#map"]').hasClass('active')) {
+        console.log("map query!");
+        queryBuildingForMapView(buildingId);
+    }
+    else {
+        console.log("list query!");
+        queryBuildingForListView(buildingId);
+    }
+});
+
+var queryBuildingForMapView = function(buildingId){
+    var Building_Class = Parse.Object.extend("Building");
+    var query = new Parse.Query(Building_Class);
+    query.get( buildingId, {
         success: function(object) {
             // Successfully found building
-            var numFloors =  object.get("NumFloors");
+            var numFloors =  object.get("numFloors");
             var floorOptionsHTML = '<label>Floor Selection</label><br />';
             for (var i = 0; i < numFloors; i++) {
                 floorOptionsHTML += '<div class="btn waves-effect waves-light floorBtn" value="' + (i+1) + '">' + (i+1) + '</div>';
@@ -203,6 +214,7 @@ $("#building-selection").change(function(e) {
             floorOptionsHTML += "</div>";
 
             $("#floor-selection").html(floorOptionsHTML);
+            $("#floor-selection").show();
             
             // set room map to first floor
             $(".floorBtn")[0].click();
@@ -211,8 +223,32 @@ $("#building-selection").change(function(e) {
             // failed becuase institution isn't listed yet I think
             alert("Error: " + error.code + " " + error.message);
         }
-    });
-});
+    }); 
+}
+
+var queryBuildingForListView = function(buildingId){
+    //Clear current list view
+    $("#room-list").html("");
+    
+    var Room_Class = Parse.Object.extend("Room");
+    var query = new Parse.Query(Room_Class);
+    query.equalTo("buildingId", buildingId);
+    query.find({
+        success: function(results) {
+            results.forEach(function(item) {
+                $("#room-list").append('<li><div class="collapsible-header"><span>' + item.get("name") + '</span><span class="right">' + (item.get("occupied") ? 'Occupied' : 'Open') + '</span></div><div class="row collapsible-body"><div class="col s3"><img class="responsive-img" src="http://placehold.it/450x315"></div><div class="col s9"><p>Room information right here.</p></div></div></li>');    
+            });
+            //Initialize accordion:
+            $('.collapsible').collapsible({
+                accordion : false
+            });
+        },
+        error: function(error) {
+            // failed becuase institution isn't listed yet I think
+            alert("Error: " + error.code + " " + error.message);
+        }
+    }); 
+}
 
 var addMarkerToFloorPlan = function(roomId, percentX, percentY) {
     
