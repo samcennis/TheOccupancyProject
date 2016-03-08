@@ -320,7 +320,7 @@ var advancedSearch = function(){
     
     $('#unoccupied').is(':checked') && query.equalTo("occupied", false);
     
-    query.greaterThan("maxCapacity", $('#capacity').val());
+    query.greaterThanOrEqualTo("maxCapacity", $('#capacity').val());
     
     $('#fixed-furniture').is(':checked')    && query.equalTo("fixedFurniture", true);
     $('#moveable-furniture').is(':checked') && query.equalTo("moveableFurniture", true);  
