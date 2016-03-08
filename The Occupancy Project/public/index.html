@@ -90,6 +90,84 @@
         </div>
     </div>
     
+    <!-- Advanced Search Modal -->
+    <div id="advancedSearchModal" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            <h4>Search for rooms</h4>
+            <div class="row">
+                <div class="col s6 input-field">
+                    <select id="building-selection-advanced">
+                    </select>    
+                    <label>In what building?</label>
+                </div>          
+                <div class="col s6 input-field">
+                    <form action="#">
+                        <div class="row">
+                            <div class="col s4">
+                                <input type="number" id="capacity" name="capacity" min="1" max="500" value="5"/> 
+                                <label class="active" for="capacity">Holds at least:</label>
+                            </div>
+                            <div class="col s8">
+                                <input type="checkbox" id="unoccupied" checked="true" />
+                                <label for="unoccupied">Unnocupied</label>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="row">
+                            <p>Request equipment:</p>
+                            <p>
+                              <input type="checkbox" id="fixed-furniture" />
+                              <label for="fixed-furniture">Fixed furniture</label>
+                            </p>
+                            <p>
+                              <input type="checkbox" id="moveable-furniture" />
+                              <label for="moveable-furniture">Moveable furniture</label>
+                            </p>
+                            <p>
+                              <input type="checkbox" id="air-conditioning" />
+                              <label for="air-conditioning">Air conditioning</label>
+                            </p>
+                            <p>
+                              <input type="checkbox" id="white-board" />
+                              <label for="white-board">White board</label>
+                            </p>
+                            <p>
+                              <input type="checkbox" id="document-camera" />
+                              <label for="document-camera">Document camera</label>
+                            </p>
+                            <p>
+                              <input type="checkbox" id="chalk-board" />
+                              <label for="chalk-board">Chalk board</label>
+                            </p>
+                            <p>
+                              <input type="checkbox" id="audio-connection" />
+                              <label for="audio-connection">Audio connection</label>
+                            </p>
+                            <p>
+                              <input type="checkbox" id="dept-computer" />
+                              <label for="test5">Department Computer</label>
+                            </p>
+                            <p>
+                              <input type="checkbox" id="double-projectors" />
+                              <label for="double-projectors">Double projectors</label>
+                            </p>
+                            <p>
+                              <input type="checkbox" id="dvd-output" />
+                              <label for="dvd-output">DVD Video Computer Output</label>
+                            </p>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div class="row">
+        </div>
+        <div class="modal-footer">
+            <a href="#!" id="advanced-search" class="modal-action modal-close waves-effect waves-green btn-flat">Search</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
+        </div>
+    </div>
+    
+    <!-- Main site -->
     <div class="site-wrapper">
         <div class="site-wrapper-inner">
 
@@ -155,17 +233,26 @@
                 </div>
             
                 <div id="main-page" style="display: none;">
-                    <div>Begin by selecting a building</div>
-                        <br />
-                        <div class="input-field" style="width: 50%; display: inline-block;">
-                            <select id="building-selection">
+                    <div class="row">
+                        <h5>Find a room:</h5>
+                    </div>
+                    <div class="row">
+                        <div class="col s6">
+                            <div class="input-field">
+                                <select id="building-selection">
 
-                            </select>    
-                            <label>Building Selection</label>
-                    </div>   
+                                </select>    
+                                <label>Building Selection</label>
+                            </div>
+                        </div>
+                        <div class="col s6">
+                            </br>
+                            <a id="advancedSearchModalTrigger" class="btn modal-trigger">Advanced search...</a>
+                        </div>
+                    </div>
                     <ul id="view-tabs" class="tabs">
-                        <li class="tab"><a id="list-tab" class="active" href="#list">List</a></li>
-                        <li class="tab"><a id="map-tab" href="#map">Map</a></li>
+                        <li id="list-tab-li" class="tab"><a id="list-tab" class="active" href="#list">List</a></li>
+                        <li id="map-tab-li" class="tab"><a id="map-tab" href="#map">Map</a></li>
                     </ul>
                     <div id="map">             
                         <div id="floor-selection">

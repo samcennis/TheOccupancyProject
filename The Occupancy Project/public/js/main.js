@@ -27,12 +27,16 @@ var mainPageSetUp = function(user) {
     query.find({
         success: function(results) {
             var buildingOptionsHTML = '<option value="" disabled selected>Select a building</option>';
+            var advancedSearchBuildingOptionsHTML = '<option value="all" selected>Search all buildings</option>';
             for (var i = 0; i < results.length; i++) {
                 var building = results[i];
                 buildingOptionsHTML += '<option value="' + building.id + '">' + building.get("name") + '</option>';
+                advancedSearchBuildingOptionsHTML += '<option value="' + building.id + '">' + building.get("name") + '</option>';
             }
 
             $("#building-selection").html(buildingOptionsHTML);
+            
+            $("#building-selection-advanced").html(advancedSearchBuildingOptionsHTML);
 
             // initialize select with materialize
             $(document).ready(function() {
@@ -99,6 +103,10 @@ if (currentUser) {
 
 $("#loginModalTrigger").click(function() {
     $('#loginModal').openModal(); 
+});
+
+$("#advancedSearchModalTrigger").click(function() {
+    $('#advancedSearchModal').openModal(); 
 });
 
 $(document).on("click","#logoffTrigger",function() {
@@ -195,6 +203,11 @@ $( "#map-tab" ).click(function() {
     }
 });
 
+$("#advanced-search").click(function() {
+    advancedSearch();  
+    $( "advancedSearchModal").closeModal();
+});
+
 $("#building-selection").change(function(e) {     
     // set floor selection buttons
     var buildingId = $(this).val();
@@ -265,7 +278,93 @@ var queryBuildingForListView = function(buildingId){
         success: function(results) {
             $("#loader").hide();
             results.forEach(function(item) {
-                $("#room-list").append('<li><div class="collapsible-header"><span>' + item.get("buildingName") + " " + item.get("name") + '</span><span class="right">' + (item.get("occupied") ? '<span class="red-text">Occupied</span>' : '<span class="green-text">Open</span>') + '</span></div><div class="row collapsible-body"><div class="col s3"><img class="responsive-img" src="' + item.get("imageURL") + '"></div><div class="col s9"><div>Max capacity: <b>' + item.get("maxCapacity") + '</b></div><i class="material-icons">info</i> ' + 
+                
+                var roomInfoHTML = buildRoomInfoHTML(item);
+                
+                $("#room-list").append(roomInfoHTML);    
+
+                //Don't show this list item if it fails to load
+                $("#" + item.id + "-img").on("error", function() { $(this).closest("li").hide(); })
+                
+                //Show this list item if img does load
+                $("#" + item.id + "-img").on("load", function() { $(this).closest("li").show(); })
+                
+            });
+            //Initialize accordion:
+            $('.collapsible').collapsible({
+                accordion : false
+            });
+            
+        },
+        error: function(error) {
+            // failed becuase institution isn't listed yet I think
+            alert("Error: " + error.code + " " + error.message);
+        }
+    }); 
+}
+
+var advancedSearch = function(){
+    
+    $("#room-list").html("");        //clear list view
+    $("#floorPlanWrapper").html(""); //clear map view
+    //$('#view-tabs').tabs('select_tab', '#list-tab-li');
+    //TODO: Switch tab
+    
+    var Room_Class = Parse.Object.extend("Room");
+    var query = new Parse.Query(Room_Class);
+    
+    if ($("#building-selection-advanced").val() != "all"){
+        query.equalTo("buildingId", $("#building-selection-advanced").val());
+    }   
+    query.ascending("name");
+    
+    $('#unoccupied').is(':checked') && query.equalTo("occupied", false);
+    
+    query.greaterThan("maxCapacity", $('#capacity').val());
+    
+    $('#fixed-furniture').is(':checked')    && query.equalTo("fixedFurniture", true);
+    $('#moveable-furniture').is(':checked') && query.equalTo("moveableFurniture", true);  
+    $('#air-conditioning').is(':checked') && query.equalTo("airConditioning", true);  
+    $('#white-board').is(':checked') && query.equalTo("whiteBoard", true);  
+    $('#document-camera').is(':checked') && query.equalTo("documentCamera", true);  
+    $('#chalk-board').is(':checked') && query.equalTo("chalkBoard", true);  
+    $('#audio-connection').is(':checked') && query.equalTo("audioConnection", true);  
+    $('#dept-computer').is(':checked') && query.equalTo("deptComputerAvailable", true);  
+    $('#double-projectors').is(':checked') && query.equalTo("doubleProjectors", true);  
+    $('#dvd-output').is(':checked') && query.equalTo("dvdVideoComputerOutput", true);  
+    
+    query.find({
+        success: function(results) {
+            $("#loader").hide();
+            results.forEach(function(item) {
+                
+                var roomInfoHTML = buildRoomInfoHTML(item);
+                
+                $("#room-list").append(roomInfoHTML);    
+
+                //Don't show this list item if it fails to load
+                $("#" + item.id + "-img").on("error", function() { $(this).closest("li").hide(); })
+                
+                //Show this list item if img does load
+                $("#" + item.id + "-img").on("load", function() { $(this).closest("li").show(); })
+                
+            });
+            //Initialize accordion:
+            $('.collapsible').collapsible({
+                accordion : false
+            });
+            
+        },
+        error: function(error) {
+            // failed becuase institution isn't listed yet I think
+            alert("Error: " + error.code + " " + error.message);
+        }
+    }); 
+    
+}
+
+var buildRoomInfoHTML = function(item){
+    return '<li style="display: none;" id="'+ item.id +'-li"><div class="collapsible-header"><span>' + item.get("buildingName") + " " + item.get("name") + '</span><span class="right">' + (item.get("occupied") ? '<span class="red-text">Occupied</span>' : '<span class="green-text">Open</span>') + '</span></div><div class="row collapsible-body"><div class="col s3"><img id="' + item.id + '-img"class="responsive-img classroom-img" src="' + item.get("imageURL") + '"></div><div class="col s9"><div>Max capacity: <b>' + item.get("maxCapacity") + '</b></div><i class="material-icons">info</i> ' + 
                 (item.get("fixedFurniture")         ? '<div class="chip">Fixed furniture</div>' : '') +
                 (item.get("moveableFurniture")      ? '<div class="chip">Moveable furniture</div>' : '') +
                 (item.get("airConditioning")        ? '<div class="chip">Air conditioning</div>' : '') +
@@ -276,18 +375,7 @@ var queryBuildingForListView = function(buildingId){
                 (item.get("deptComputerAvailable")  ? '<div class="chip">Department computer available</div>' : '') +
                 (item.get("doubleProjectors")       ? '<div class="chip">Double projectors</div>' : '') +
                 (item.get("dvdVideoComputerOutput") ? '<div class="chip">DVD Video Computer Output</div>' : '') +
-                '</ul></div></div></li>');    
-            });
-            //Initialize accordion:
-            $('.collapsible').collapsible({
-                accordion : false
-            });
-        },
-        error: function(error) {
-            // failed becuase institution isn't listed yet I think
-            alert("Error: " + error.code + " " + error.message);
-        }
-    }); 
+                '</ul></div></div></li>';
 }
 
 var addMarkerToFloorPlan = function(roomId, percentX, percentY) {

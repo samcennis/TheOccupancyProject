@@ -133,10 +133,12 @@ head {
     padding-bottom: 20px;
 }
 
+/*
 .modal {
     z-index: 9999;
     max-width: 350px;
 }
+*/
 
 #main-page {
     max-width: 1000px;
