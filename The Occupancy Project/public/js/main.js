@@ -74,9 +74,54 @@ var updateDummyPingCurrentBuilding = function(buildingID) {
         error: function(error) {
             alert("Error: " + error.code + " " + error.message);
         }
+    });    
+}
+
+var buildHourlyChart = function(elementId,title,xAxisTitle,yAxisTitle,yData) {
+    var xLabels = ['12AM','1','2','3','4','5','6','7','8','9','10','11','12PM','1','2','3','4','5','6','7','8','9','10','11'];
+    buildChart(elementId,title,xAxisTitle,yAxisTitle,xLabels,yData);
+}
+
+var buildChart = function(elementId,title,xAxisTitle,yAxisTitle,xLabels,yData) {
+    $('#' + elementId).highcharts({
+        chart: {
+            type: 'areaspline',
+            backgroundColor: 'rgba(255,255,255,0)'
+        },
+        title: {
+            text: title
+        },
+        xAxis: {
+            categories: xLabels,
+            title: {
+                text: xAxisTitle
+            }
+        },
+        legend: {
+            enabled: false  
+        },
+        yAxis: {
+            title: {
+                text: yAxisTitle
+            },
+            ceiling: 100
+        },
+        tooltip: {
+            shared: true,
+            valueSuffix: '%'
+        },
+        credits: {
+            enabled: false
+        },
+        plotOptions: {
+            areaspline: {
+                fillOpacity: 0.5
+            }
+        },
+        series: [{
+            data: yData
+        }]
     });
-    
-    
 }
 
 /* =======================================
@@ -275,31 +320,8 @@ var queryBuildingForListView = function(buildingId){
     query.equalTo("buildingId", buildingId);
     query.ascending("name");
     query.find({
-        success: function(results) {
-            $("#loader").hide();
-            results.forEach(function(item) {
-                
-                var roomInfoHTML = buildRoomInfoHTML(item);
-                
-                $("#room-list").append(roomInfoHTML);    
-
-                //Don't show this list item if it fails to load
-                $("#" + item.id + "-img").on("error", function() { $(this).closest("li").hide(); })
-                
-                //Show this list item if img does load
-                $("#" + item.id + "-img").on("load", function() { $(this).closest("li").show(); })
-                
-            });
-            //Initialize accordion:
-            $('.collapsible').collapsible({
-                accordion : false
-            });
-            
-        },
-        error: function(error) {
-            // failed becuase institution isn't listed yet I think
-            alert("Error: " + error.code + " " + error.message);
-        }
+        success: processSearchQuery,
+        error: processErrorQuery
     }); 
 }
 
@@ -334,48 +356,74 @@ var advancedSearch = function(){
     $('#dvd-output').is(':checked') && query.equalTo("dvdVideoComputerOutput", true);  
     
     query.find({
-        success: function(results) {
-            $("#loader").hide();
-            results.forEach(function(item) {
-                
-                var roomInfoHTML = buildRoomInfoHTML(item);
-                
-                $("#room-list").append(roomInfoHTML);    
-
-                //Don't show this list item if it fails to load
-                $("#" + item.id + "-img").on("error", function() { $(this).closest("li").hide(); })
-                
-                //Show this list item if img does load
-                $("#" + item.id + "-img").on("load", function() { $(this).closest("li").show(); })
-                
-            });
-            //Initialize accordion:
-            $('.collapsible').collapsible({
-                accordion : false
-            });
-            
-        },
-        error: function(error) {
-            // failed becuase institution isn't listed yet I think
-            alert("Error: " + error.code + " " + error.message);
-        }
+        success: processSearchQuery,
+        error: processErrorQuery
     }); 
     
 }
 
+var processSearchQuery = function(results) {
+    $("#loader").hide();
+    results.forEach(function(item) {
+
+        var roomInfoHTML = buildRoomInfoHTML(item);
+
+        $("#room-list").append(roomInfoHTML);  
+        
+        buildHourlyChart('avgHourlyGraph-' + item.id,'Average Occupancy by Hour','Hour','% of time occupied',probabilityOccupiedHourly());
+
+        //Don't show this list item if it fails to load
+        $("#" + item.id + "-img").on("error", function() { $(this).closest("li").hide(); })
+
+        //Show this list item if img does load
+        $("#" + item.id + "-img").on("load", function() { $(this).closest("li").show(); })
+
+    });
+    //Initialize accordion:
+    $('.collapsible').collapsible({
+        accordion : false
+    });
+}
+
+var processErrorQuery = function(error) {
+    alert("Error: " + error.code + " " + error.message);
+}
+
 var buildRoomInfoHTML = function(item){
-    return '<li style="display: none;" id="'+ item.id +'-li"><div class="collapsible-header"><span>' + item.get("buildingName") + " " + item.get("name") + '</span><span class="right">' + (item.get("occupied") ? '<span class="red-text">Occupied</span>' : '<span class="green-text">Open</span>') + '</span></div><div class="row collapsible-body"><div class="col s3"><img id="' + item.id + '-img"class="responsive-img classroom-img" src="' + item.get("imageURL") + '"></div><div class="col s9"><div>Max capacity: <b>' + item.get("maxCapacity") + '</b></div><i class="material-icons">info</i> ' + 
-                (item.get("fixedFurniture")         ? '<div class="chip">Fixed furniture</div>' : '') +
-                (item.get("moveableFurniture")      ? '<div class="chip">Moveable furniture</div>' : '') +
-                (item.get("airConditioning")        ? '<div class="chip">Air conditioning</div>' : '') +
-                (item.get("whiteBoard")             ? '<div class="chip">White board</div>' : '') +
-                (item.get("documentCamera")         ? '<div class="chip">Document camera</div>' : '') +
-                (item.get("chalkBoard")             ? '<div class="chip">Chalk board</div>' : '') +
-                (item.get("audioConnection")        ? '<div class="chip">Audio connection</div>' : '') +
-                (item.get("deptComputerAvailable")  ? '<div class="chip">Department computer available</div>' : '') +
-                (item.get("doubleProjectors")       ? '<div class="chip">Double projectors</div>' : '') +
-                (item.get("dvdVideoComputerOutput") ? '<div class="chip">DVD Video Computer Output</div>' : '') +
-                '</ul></div></div></li>';
+    var roomInfoHTML = '<li style="display: none;" id="'+ item.id +'-li">';
+    
+    roomInfoHTML += '<div class="collapsible-header">';
+    roomInfoHTML += '<span>' + item.get("buildingName") + " " + item.get("name") + '</span>';
+    roomInfoHTML += '<span class="right">' + (item.get("occupied") ? '<span class="red-text">Occupied</span>' : '<span class="green-text">Open</span>') + '</span>';
+    roomInfoHTML += '</div>';
+    
+    roomInfoHTML += '<div class="row collapsible-body">';
+        roomInfoHTML += '<div class="col s3"><img id="' + item.id + '-img"class="responsive-img classroom-img" src="' + item.get("imageURL") + '"></div>';
+    
+        roomInfoHTML += '<div class="col s9">';
+            roomInfoHTML += '<div>Max capacity: <b>' + item.get("maxCapacity") + '</b></div>';
+            roomInfoHTML += '<i class="material-icons">info</i> ' + 
+                            (item.get("fixedFurniture")         ? '<div class="chip">Fixed furniture</div>' : '') +
+                            (item.get("moveableFurniture")      ? '<div class="chip">Moveable furniture</div>' : '') +
+                            (item.get("airConditioning")        ? '<div class="chip">Air conditioning</div>' : '') +
+                            (item.get("whiteBoard")             ? '<div class="chip">White board</div>' : '') +
+                            (item.get("documentCamera")         ? '<div class="chip">Document camera</div>' : '') +
+                            (item.get("chalkBoard")             ? '<div class="chip">Chalk board</div>' : '') +
+                            (item.get("audioConnection")        ? '<div class="chip">Audio connection</div>' : '') +
+                            (item.get("deptComputerAvailable")  ? '<div class="chip">Department computer available</div>' : '') +
+                            (item.get("doubleProjectors")       ? '<div class="chip">Double projectors</div>' : '') +
+                            (item.get("dvdVideoComputerOutput") ? '<div class="chip">DVD Video Computer Output</div>' : '');
+    
+            // HighCharts Graphs
+            roomInfoHTML += '<div id="avgHourlyGraph-' + item.id + '" style="height: 200px; margin: 0 auto"></div>';
+            roomInfoHTML += '';
+    
+        roomInfoHTML += '</div>';
+    
+    roomInfoHTML += '</div>';
+    roomInfoHTML += '</li>';
+    
+    return roomInfoHTML;
 }
 
 var addMarkerToFloorPlan = function(roomId, percentX, percentY) {
