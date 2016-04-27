@@ -53,11 +53,11 @@ var mainPageSetUp = function (user) {
 
 var updateDummyPingCurrentBuilding = function (buildingID) {
 
-    var RoomSummary = Parse.Object.extend("RoomSummary");
+    var RoomSummary = Parse.Object.extend("Room");
     var query = new Parse.Query(RoomSummary);
 
     query.equalTo("buildingId", buildingID);
-    query.ascending("roomName");
+    query.ascending("name");
 
     query.find({
         success: function (results) {
@@ -65,7 +65,7 @@ var updateDummyPingCurrentBuilding = function (buildingID) {
 
             for (var i = 0; i < results.length; i++) {
                 var object = results[i];
-                dummyPingRoomOptionsHTML += '<option value="' + object.get("objectId") + '">' + object.get("roomName") + '</option>';
+                dummyPingRoomOptionsHTML += '<option value="' + object.id + '">' + object.get("name") + '</option>';
             }
 
             $("#dummy-room-selection").html(dummyPingRoomOptionsHTML);
@@ -283,6 +283,21 @@ $("#building-selection").change(function (e) {
         console.log("list query!");
         queryBuildingForListView(buildingId);
     }
+});
+
+$("#dummy-room-selection").change(function (e) {
+    var MACAddr_RmID_Mapping_Class = Parse.Object.extend("MACAddr_RmID_Mapping");
+    var query = new Parse.Query(MACAddr_RmID_Mapping_Class);
+    query.equalTo("RoomId", $("#dummy-room-selection").val());
+    query.first({
+        success: function (object) {
+            $("#macAddr").val(object.get("MACAddr"));
+        }
+        , error: function (error) {
+            console.log("Error: " + error.code + " " + error.message);
+        }
+    });
+
 });
 
 var queryBuildingForMapView = function (buildingId) {
