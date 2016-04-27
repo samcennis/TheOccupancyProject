@@ -402,7 +402,7 @@ var buildRoomInfoHTML = function(item){
     
         roomInfoHTML += '<div class="col s9">';
             roomInfoHTML += '<div>Max capacity: <b>' + item.get("maxCapacity") + '</b></div>';
-            roomInfoHTML += '<i class="material-icons">info</i> ' + 
+            roomInfoHTML += '<i class="material-icons" style="vertical-align: middle";>info</i> ' + 
                             (item.get("fixedFurniture")         ? '<div class="chip">Fixed furniture</div>' : '') +
                             (item.get("moveableFurniture")      ? '<div class="chip">Moveable furniture</div>' : '') +
                             (item.get("airConditioning")        ? '<div class="chip">Air conditioning</div>' : '') +
