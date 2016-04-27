@@ -14,7 +14,35 @@ var generateHexNumber = function() {
 }
 
 var addMACforRooms = function() {
-    
+    var RoomClass = Parse.Object.extend("Room");
+    var query = new Parse.Query(RoomClass);
+    query.limit(1000);
+    query.skip(1000);
+    query.find({
+      success: function(results) {
+        for (var resultKey in results) {
+            // console.log(resultKey + ": " + results[resultKey].id);
+            
+            var MACAddr_RmID_Mapping_Class = Parse.Object.extend("MACAddr_RmID_Mapping");
+            var mapping = new MACAddr_RmID_Mapping_Class();
+            mapping.set("RoomId", results[resultKey].id);
+            mapping.set("MACAddr", generateMACAddress());
+
+            mapping.save(null, {
+                success: function() {
+                // Execute any logic that should take place after the object is saved.
+                console.log('New mapping added');
+                },
+                error: function(building, error) {
+                    alert('Failed to add building ' + buildingNames[i] + ' with error code: ' + error.message);
+                }
+            });
+        }
+      },
+      error: function(error) {
+        // error is an instance of Parse.Error.
+      }
+    });
 }
 
 var probabilityOccupiedHourly = function() {
