@@ -126,6 +126,111 @@ var buildChart = function (elementId, title, xAxisTitle, yAxisTitle, xLabels, yD
     });
 }
 
+var buildAvgGraph = function(arrayOfProbabilities) {
+    
+    var seriesObj = new Array();
+    for (key in arrayOfProbabilities) {
+        seriesObj.push({"name": key, "data": arrayOfProbabilities[key]});   
+    }
+    
+    $('#averages-graph').highcharts({
+        chart: {
+            type: 'areaspline',
+            backgroundColor: 'rgba(255,255,255,0)'
+        },
+        title: {
+            text: 'Average Hourly Usage for Building by Room'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 150,
+            y: 100,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        },
+        xAxis: {
+            categories: ['12AM', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12PM', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']
+        },
+        yAxis: {
+            title: {
+                text: '% of time occupied'
+            },
+            ceiling: 100
+        },
+        tooltip: {
+            shared: true,
+            valueSuffix: '%'
+        },
+        credits: {
+            enabled: false
+        },
+        plotOptions: {
+            areaspline: {
+                fillOpacity: 0.5
+            }
+        },
+        series: seriesObj
+    });
+}
+
+var buildDailyGraph = function(elementName) {
+    
+    var arr = [Math.random() * 100 - .7, Math.random() * 100 - .2 , Math.random() * 100 - .2, Math.random() * 100 -.2, Math.random() * 100, Math.random() * 100 -.2, Math.random() * 100 - .7];
+    
+    $('#daily-graph').highcharts({
+        chart: {
+            type: 'column',
+            backgroundColor: 'rgba(255,255,255,0)'
+        },
+        title: {
+            text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            categories: [
+                'Sunday',
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+            ],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Occupancy by Day'
+            },
+            ceiling: 100
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f}%</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Avg. Occupancy',
+            data: arr
+        }]
+    });
+}
+
 /* =======================================
 ========== INITIALIZATION ================
 ======================================= */
@@ -283,6 +388,9 @@ $("#building-selection").change(function (e) {
         console.log("list query!");
         queryBuildingForListView(buildingId);
     }
+    
+    $("#analytics-body").html("");
+    $("#analytics-page").show();
 });
 
 $("#dummy-room-selection").change(function (e) {
@@ -391,25 +499,46 @@ var advancedSearch = function () {
 
 var processSearchQuery = function (results) {
     $("#loader").hide();
+    
+    // average of rooms array (an array of arrays)
+    allRoomsPlotLines = {};
+    
     results.forEach(function (item) {
 
         var roomInfoHTML = buildRoomInfoHTML(item);
 
         $("#room-list").append(roomInfoHTML);
-
-        buildHourlyChart('avgHourlyGraph-' + item.id, 'Average Occupancy by Hour', 'Hour', '% of time occupied', probabilityOccupiedHourly());
+        
+        // construct analytics page HTML
+        var analyticsHTML = '<div id="room-analytics-' + item.id + '-wrapper" style="display: none;">';
+        analyticsHTML += '<p style="font-size: 24px;"><b>' + item.get("buildingName") + ":</b> Room " + item.get("name") + "</p>";
+        analyticsHTML += '<div id="analytics-avgHourlyGraph-' + item.id + '" style="height: 200px; margin: 0 auto"></div>';
+        analyticsHTML += '</div>';
+        
+        $("#analytics-body").append(analyticsHTML);
 
         //Don't show this list item if it fails to load
         $("#" + item.id + "-img").on("error", function () {
             $(this).closest("li").hide();
         })
 
-        //Show this list item if img does load
+        //Show this list item if img does load, process analytics for room as well
         $("#" + item.id + "-img").on("load", function () {
-            $(this).closest("li").show();
+            var probabilityHourlyOccupiedArray = probabilityOccupiedHourly();
+            buildHourlyChart('avgHourlyGraph-' + item.id, 'Average Occupancy by Hour', 'Hour', '% of time occupied', probabilityHourlyOccupiedArray);
+            buildHourlyChart('analytics-avgHourlyGraph-' + item.id, 'Average Occupancy by Hour', 'Hour', '% of time occupied', probabilityHourlyOccupiedArray);
+            allRoomsPlotLines[item.get("name")] = probabilityHourlyOccupiedArray;
+            
+            $(this).closest("li").show();   
+            $('#room-analytics-' + item.id + '-wrapper').show();
+            
+            // Build Average Graph
+            buildAvgGraph(allRoomsPlotLines);
+            
+            buildDailyGraph('#daily-graph');
         })
-
     });
+    
     //Initialize accordion:
     $('.collapsible').collapsible({
         accordion: false
@@ -419,6 +548,8 @@ var processSearchQuery = function (results) {
 var processErrorQuery = function (error) {
     alert("Error: " + error.code + " " + error.message);
 }
+
+
 
 var buildRoomInfoHTML = function (item) {
     var roomInfoHTML = '<li style="display: none;" id="' + item.id + '-li">';
