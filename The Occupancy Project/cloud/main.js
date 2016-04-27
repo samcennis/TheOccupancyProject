@@ -82,7 +82,7 @@ Parse.Cloud.afterSave('SensorReading', function(request) {
 				alert("Map query error: No MAC to Room ID map found for this MAC address.");
 			}
             
-            var RoomSummary = Parse.Object.extend("RoomSummary");
+            var RoomSummary = Parse.Object.extend("Room");
             
 			roomQuery = new Parse.Query(RoomSummary);
             var roomID = map.get("RoomId");
